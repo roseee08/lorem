@@ -23,10 +23,10 @@ const getById = async (jadwalId) => {
 };
 
 // Function to create a new jadwal makanan in the database
-const create = async (jadwalMakanan) => {
+const create = async (jadwalMakan) => {
   try {
     return await prisma.jadwalMakan.create({
-      data: jadwalMakanan,
+      data: jadwalMakan,
     });
   } catch (error) {
     console.log(error);
@@ -34,26 +34,26 @@ const create = async (jadwalMakanan) => {
 };
 
 // Function to update an existing jadwal makanan by ID in the database
-const updateById = async (jadwalId, jadwalMakanan) => {
+const updateById = async (jadwalId, jadwalMakan) => {
   try {
     return await prisma.jadwalMakan.update({
       where: {
         jadwalId,
       },
-      data: jadwalMakanan,
+      data: jadwalMakan,
     });
   } catch (error) {
     console.log(error);
   }
 };
 
-const patchById = async (jadwalId, jadwalMakanan) => {
+const patchById = async (jadwalId, jadwalMakan) => {
     try {
       return await prisma.jadwalMakan.update({
         where: {
           jadwalId,
         },
-        data: jadwalMakanan,
+        data: jadwalMakan,
       });
     } catch (error) {
       console.log(error);
