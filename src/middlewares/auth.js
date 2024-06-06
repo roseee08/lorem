@@ -23,8 +23,7 @@ const authentificateToken = async (req, res, next) => {
         await prisma.user.create({
           data: {
             userUID: decodedToken.uid,
-            identifier: decodedToken.email,
-            name: decodedToken.name || "", // You can adjust based on the available fields
+
           },
         });
       }

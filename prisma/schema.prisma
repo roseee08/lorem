@@ -14,36 +14,47 @@ datasource db {
 }
 
 model JadwalMakan {
-  jadwalId    Int   @id @default(autoincrement())
+  jadwalId    Int      @id @default(autoincrement())
   jadwalMakan String
   waktu       DateTime
   user        User     @relation(fields: [userId], references: [userUID])
   userId      String
 }
 
-
 model JadwalVitamin {
-  jadwalId    Int   @id @default(autoincrement())
-  vitamin     String
-  waktu       DateTime
-  user        User     @relation(fields: [userId], references: [userUID])
-  userId      String
+  jadwalId Int      @id @default(autoincrement())
+  vitamin  String
+  waktu    DateTime
+  user     User     @relation(fields: [userId], references: [userUID])
+  userId   String
 }
 
 model JadwalMain {
-  jadwalId    Int   @id @default(autoincrement())
-  aktivitasMainBulu  String
-  waktu       DateTime
-  user        User     @relation(fields: [userId], references: [userUID])
-  userId      String
+  jadwalId          Int      @id @default(autoincrement())
+  aktivitasMainBulu String
+  waktu             DateTime
+  user              User     @relation(fields: [userId], references: [userUID])
+  userId            String
+}
+
+enum JenisKelamin {
+  JANTAN
+  BETINA
+}
+
+model Peliharaan {
+  peliharaanId Int          @id @default(autoincrement())
+  nama         String
+  umur         Int
+  jenisKelamin JenisKelamin
+  user         User         @relation(fields: [userId], references: [userUID])
+  userId       String
 }
 
 model User {
-  userUID       String        @id
-  identifier    String        @unique
-  name          String
+  userUID       String          @id
   jadwalMakanan JadwalMakan[]
   jadwalVitamin JadwalVitamin[]
-  jadwalMain JadwalMain[]
+  jadwalMain    JadwalMain[]
+  peliharaan    Peliharaan[]
 }
-
