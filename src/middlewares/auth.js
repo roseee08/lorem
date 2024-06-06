@@ -1,6 +1,7 @@
-import { auth } from "../configs/firebase.js";
+const { auth } = require('../configs/firebase');
+const prisma = require('../configs/prismaClient');
 
-export const authentificateToken = async (req, res, next) => {
+const authentificateToken = async (req, res, next) => {
   try {
     const bearerHeader = req.headers["authorization"];
     if (typeof bearerHeader !== "undefined") {
@@ -9,26 +10,28 @@ export const authentificateToken = async (req, res, next) => {
 
       const decodedToken = await auth.verifyIdToken(token);
 
-      let user = await prisma.user.findUnique({
+      // console.log(decodedToken);
+      
+      const user = await prisma.user.findUnique({
         where: {
-          user_uid: decodedToken.uid,
+          userUID: decodedToken.uid,
         },
       });
 
       // If the user does not exist, create a new user
       if (!user) {
-        user = await prisma.user.create({
+        await prisma.user.create({
           data: {
-            user_uid: decodedToken.uid,
-            email: decodedToken.email,
-            name: decodedToken.name || "Anonymous", // You can adjust based on the available fields
+            userUID: decodedToken.uid,
+            identifier: decodedToken.email,
+            name: decodedToken.name || "", // You can adjust based on the available fields
           },
         });
       }
 
       // Attach the user to the request object for further use
       req.user = user;
-      
+
       next();
     } else {
       res.status(401).json({ message: "Unauthorized" });
@@ -38,3 +41,5 @@ export const authentificateToken = async (req, res, next) => {
     res.status(403).json({ message: "Forbidden" });
   }
 };
+
+module.exports = { authentificateToken };
