@@ -37,6 +37,22 @@ model JadwalMain {
   userId            String
 }
 
+model JadwalCemilan {
+  jadwalId      Int      @id @default(autoincrement())
+  jadwalCemilan String
+  waktu         DateTime
+  user          User     @relation(fields: [userId], references: [userUID])
+  userId        String
+}
+
+model JadwalTemu {
+  jadwalId   Int      @id @default(autoincrement())
+  jadwalTemu String
+  waktu      DateTime
+  user       User     @relation(fields: [userId], references: [userUID])
+  userId     String
+}
+
 enum JenisKelamin {
   JANTAN
   BETINA
@@ -47,6 +63,7 @@ model Peliharaan {
   nama         String
   umur         Int
   jenisKelamin JenisKelamin
+  slogan       String
   user         User         @relation(fields: [userId], references: [userUID])
   userId       String
 }
@@ -57,4 +74,6 @@ model User {
   jadwalVitamin JadwalVitamin[]
   jadwalMain    JadwalMain[]
   peliharaan    Peliharaan[]
+  JadwalCemilan JadwalCemilan[]
+  JadwalTemu    JadwalTemu[]
 }
