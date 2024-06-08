@@ -13,11 +13,11 @@ const {
   updatePeliharaanById,
   deletePeliharaanById,
   patchPeliharaanById,
-} = require("../controllers/jadwalMain.controller");
+} = require("../controllers/peliharaan.controller");
 
 // Validation rules for create and update routes
 const createOrUpdateRules = [
-  body("jadwalMain")
+  body("peliharaan")
     .trim()
     .isLength({ min: 1 })
     .withMessage("Jadwal Main field is required"),
@@ -36,13 +36,13 @@ const createOrUpdateRules = [
 // Routes that require authentication and input validation
 router.post("/", authentificateToken, createOrUpdateRules, createPeliharaan);
 router.put(
-  "/:jadwalId",
+  "/:peliharaanId",
   authentificateToken,
   createOrUpdateRules,
   updatePeliharaanById
 );
 router.patch(
-  "/:jadwalId",
+  "/:peliharaanId",
   authentificateToken,
 //   createOrUpdateRules,
   patchPeliharaanById
@@ -50,7 +50,7 @@ router.patch(
 
 // Routes that require authentication (GET all, GET by ID, DELETE)
 router.get("/", authentificateToken, getAllPeliharaan);
-router.get("/:jadwalId", authentificateToken, getPeliharaanById);
-router.delete("/:jadwalId", authentificateToken, deletePeliharaanById);
+router.get("/:peliharaanId", authentificateToken, getPeliharaanById);
+router.delete("/:peliharaanId", authentificateToken, deletePeliharaanById);
 
 module.exports = router;
