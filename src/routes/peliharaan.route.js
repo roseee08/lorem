@@ -20,7 +20,7 @@ const createOrUpdateRules = [
   body("nama")
     .trim()
     .isLength({ min: 1 })
-    .withMessage("Nama Main field is required"),
+    .withMessage("Nama field is required"),
   // body("userId")
   //   .trim()
   //   .isLength({ min: 1 })
@@ -31,7 +31,10 @@ const createOrUpdateRules = [
   //     .withMessage("Waktu field is required")
   //     .isISO8601()
   //     .withMessage("Waktu must be a valid ISO 8601 date and time"),
-  body("umur").isInt({ min: 0 }).withMessage("Umur must be a valid integer"),
+  body("umur")
+  .trim()
+  .isLength({ min: 1 })
+  .withMessage("Umur field is required"),
   body("jenisKelamin")
     .isIn(["JANTAN", "BETINA"])
     .withMessage("JenisKelamin must be either JANTAN or BETINA"),

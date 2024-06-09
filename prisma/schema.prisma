@@ -54,7 +54,7 @@ enum JenisKelamin {
 model Peliharaan {
   peliharaanId    Int               @id @default(autoincrement())
   nama            String
-  umur            Int
+  umur            String
   jenisKelamin    JenisKelamin
   user            User              @relation(fields: [userId], references: [userUID])
   userId          String

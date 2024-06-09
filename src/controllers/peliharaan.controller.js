@@ -42,7 +42,7 @@ const createPeliharaan = async (req, res) => {
   
   const peliharaanData = {
     ...req.body,
-    umur: parseInt(req.body.umur, 10), // Convert umur to integer
+    // umur: parseInt(req.body.umur, 10), // Convert umur to integer
     userId: req.user.userUID, // Assuming user ID is stored in req.user.id
   };
 
@@ -65,7 +65,7 @@ const updatePeliharaanById = async (req, res) => {
   const { peliharaanId } = req.params;
   const peliharaanData = {
     ...req.body,
-    umur: parseInt(req.body.umur, 10), // Convert umur to integer
+    // umur: parseInt(req.body.umur, 10), // Convert umur to integer
     userId: req.user.userUID, // Assuming user ID is stored in req.user.id
   };
 
@@ -90,7 +90,7 @@ const patchPeliharaanById = async (req, res) => {
   const { peliharaanId } = req.params;
   const peliharaanData = {
     ...req.body,
-    umur: parseInt(req.body.umur, 10), // Convert umur to integer
+    // umur: parseInt(req.body.umur, 10), // Convert umur to integer
     userId: req.user.userUID, // Assuming user ID is stored in req.user.id
   };
 
