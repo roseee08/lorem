@@ -25,6 +25,16 @@ const createOrUpdateRules = [
   //   .trim()
   //   .isLength({ min: 1 })
   //   .withMessage("User ID field is required"),
+    body("jenisMakanan")
+      .trim()
+      .isLength({ min: 1 })
+      .withMessage("Jenis Makanan field is required"),
+
+      body("peliharaanId")
+      .trim()
+      .isLength({ min: 1 })
+      .withMessage("peliharaanId field is required"),
+
   body("waktu")
     .trim()
     .isLength({ min: 1 })

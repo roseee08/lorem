@@ -42,7 +42,7 @@ const createJadwalMakan = async (req, res) => {
   
   const jadwalMakanData = {
     ...req.body,
-    userId: req.user.userUID, // Assuming user ID is stored in req.user.id
+    peliharaanId: parseInt(req.body.peliharaanId)
   };
 
   try {
@@ -64,8 +64,9 @@ const updateJadwalMakanById = async (req, res) => {
   const { jadwalId } = req.params;
   const jadwalMakanData = {
     ...req.body,
-    userId: req.user.id, // Assuming user ID is stored in req.user.id
+    peliharaanId: parseInt(req.body.peliharaanId)
   };
+
 
   try {
     const updatedJadwalMakan = await updateById(parseInt(jadwalId), jadwalMakanData);
@@ -88,8 +89,9 @@ const patchJadwalMakanById = async (req, res) => {
   const { jadwalId } = req.params;
   const jadwalMakanData = {
     ...req.body,
-    userId: req.user.id, // Assuming user ID is stored in req.user.id
+    // peliharaanId: parseInt(req.body.peliharaanId)
   };
+
 
   try {
     const updatedJadwalMakan = await patchById(parseInt(jadwalId), jadwalMakanData);

@@ -17,14 +17,20 @@ const {
 
 // Validation rules for create and update routes
 const createOrUpdateRules = [
-  body("jadwalVitamin")
+  body("jenisVitamin")
     .trim()
     .isLength({ min: 1 })
-    .withMessage("Jadwal Vitamin field is required"),
+    .withMessage("Jenis Vitamin field is required"),
   // body("userId")
   //   .trim()
   //   .isLength({ min: 1 })
   //   .withMessage("User ID field is required"),
+
+  body("peliharaanId")
+  .trim()
+  .isLength({ min: 1 })
+  .withMessage("peliharaanId field is required"),
+
   body("waktu")
     .trim()
     .isLength({ min: 1 })

@@ -7,24 +7,30 @@ const { authentificateToken } = require("../middlewares/auth");
 
 // Import your controller or service functions for managing data
 const {
-  getAllJadwalMain,
-  getJadwalMainById,
-  createJadwalMain,
-  updateJadwalMainById,
-  deleteJadwalMainById,
-  patchJadwalMainById,
-} = require("../controllers/jadwalMain.controller");
+  getAllJadwalAktifitas,
+  getJadwalAktifitasById,
+  createJadwalAktifitas,
+  updateJadwalAktifitasById,
+  deleteJadwalAktifitasById,
+  patchJadwalAktifitasById,
+} = require("../controllers/jadwalAktifitas.controller");
 
 // Validation rules for create and update routes
 const createOrUpdateRules = [
-  body("jadwalMain")
+  body("jadwalAktifitas")
     .trim()
     .isLength({ min: 1 })
-    .withMessage("Jadwal Main field is required"),
+    .withMessage("Jadwal Aktifitas field is required"),
   // body("userId")
   //   .trim()
   //   .isLength({ min: 1 })
   //   .withMessage("User ID field is required"),
+
+  body("peliharaanId")
+  .trim()
+  .isLength({ min: 1 })
+  .withMessage("peliharaanId field is required"),
+
   body("waktu")
     .trim()
     .isLength({ min: 1 })
@@ -34,23 +40,23 @@ const createOrUpdateRules = [
 ];
 
 // Routes that require authentication and input validation
-router.post("/", authentificateToken, createOrUpdateRules, createJadwalMain);
+router.post("/", authentificateToken, createOrUpdateRules, createJadwalAktifitas);
 router.put(
   "/:jadwalId",
   authentificateToken,
   createOrUpdateRules,
-  updateJadwalMainById
+  updateJadwalAktifitasById
 );
 router.patch(
   "/:jadwalId",
   authentificateToken,
 //   createOrUpdateRules,
-  patchJadwalMainById
+  patchJadwalAktifitasById
 );
 
 // Routes that require authentication (GET all, GET by ID, DELETE)
-router.get("/", authentificateToken, getAllJadwalMain);
-router.get("/:jadwalId", authentificateToken, getJadwalMainById);
-router.delete("/:jadwalId", authentificateToken, deleteJadwalMainById);
+router.get("/", authentificateToken, getAllJadwalAktifitas);
+router.get("/:jadwalId", authentificateToken, getJadwalAktifitasById);
+router.delete("/:jadwalId", authentificateToken, deleteJadwalAktifitasById);
 
 module.exports = router;

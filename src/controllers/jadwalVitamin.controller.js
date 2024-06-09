@@ -42,7 +42,7 @@ const createJadwalVitamin = async (req, res) => {
   
   const jadwalVitaminData = {
     ...req.body,
-    userId: req.user.userUID, // Assuming user ID is stored in req.user.id
+    peliharaanId: parseInt(req.body.peliharaanId)
   };
 
   try {
@@ -64,8 +64,9 @@ const updateJadwalVitaminById = async (req, res) => {
   const { jadwalId } = req.params;
   const jadwalVitaminData = {
     ...req.body,
-    userId: req.user.id, // Assuming user ID is stored in req.user.id
+    peliharaanId: parseInt(req.body.peliharaanId)
   };
+
 
   try {
     const updatedJadwalVitamin = await updateById(parseInt(jadwalId), jadwalVitaminData);
@@ -88,8 +89,9 @@ const patchJadwalVitaminById = async (req, res) => {
   const { jadwalId } = req.params;
   const jadwalVitaminData = {
     ...req.body,
-    userId: req.user.id, // Assuming user ID is stored in req.user.id
+    // peliharaanId: parseInt(req.body.peliharaanId)
   };
+
 
   try {
     const updatedJadwalVitamin = await patchById(parseInt(jadwalId), jadwalVitaminData);

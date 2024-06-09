@@ -42,8 +42,9 @@ const createJadwalTemu = async (req, res) => {
   
   const jadwalTemuData = {
     ...req.body,
-    userId: req.user.userUID, // Assuming user ID is stored in req.user.id
+    peliharaanId: parseInt(req.body.peliharaanId)
   };
+
 
   try {
     const createdJadwalTemu = await create(jadwalTemuData);
@@ -64,8 +65,9 @@ const updateJadwalTemuById = async (req, res) => {
   const { jadwalId } = req.params;
   const jadwalTemuData = {
     ...req.body,
-    userId: req.user.id, // Assuming user ID is stored in req.user.id
+    peliharaanId: parseInt(req.body.peliharaanId)
   };
+
 
   try {
     const updatedJadwalTemu = await updateById(parseInt(jadwalId), jadwalTemuData);
@@ -88,8 +90,9 @@ const patchJadwalTemuById = async (req, res) => {
   const { jadwalId } = req.params;
   const jadwalTemuData = {
     ...req.body,
-    userId: req.user.id, // Assuming user ID is stored in req.user.id
+    // peliharaanId: parseInt(req.body.peliharaanId)
   };
+
 
   try {
     const updatedJadwalTemu = await patchById(parseInt(jadwalId), jadwalTemuData);

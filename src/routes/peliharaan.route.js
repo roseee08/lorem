@@ -17,20 +17,24 @@ const {
 
 // Validation rules for create and update routes
 const createOrUpdateRules = [
-  body("peliharaan")
+  body("nama")
     .trim()
     .isLength({ min: 1 })
-    .withMessage("Jadwal Main field is required"),
+    .withMessage("Nama Main field is required"),
   // body("userId")
   //   .trim()
   //   .isLength({ min: 1 })
   //   .withMessage("User ID field is required"),
-  body("waktu")
-    .trim()
-    .isLength({ min: 1 })
-    .withMessage("Waktu field is required")
-    .isISO8601()
-    .withMessage("Waktu must be a valid ISO 8601 date and time"),
+  //   body("waktu")
+  //     .trim()
+  //     .isLength({ min: 1 })
+  //     .withMessage("Waktu field is required")
+  //     .isISO8601()
+  //     .withMessage("Waktu must be a valid ISO 8601 date and time"),
+  body("umur").isInt({ min: 0 }).withMessage("Umur must be a valid integer"),
+  body("jenisKelamin")
+    .isIn(["JANTAN", "BETINA"])
+    .withMessage("JenisKelamin must be either JANTAN or BETINA"),
 ];
 
 // Routes that require authentication and input validation
@@ -44,7 +48,7 @@ router.put(
 router.patch(
   "/:peliharaanId",
   authentificateToken,
-//   createOrUpdateRules,
+  //   createOrUpdateRules,
   patchPeliharaanById
 );
 
