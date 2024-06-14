@@ -1,9 +1,11 @@
+// routes/peliharaan.js
 const express = require("express");
 const { body } = require("express-validator");
 const router = express.Router();
 
 // Require the authentificateToken middleware
 const { authentificateToken } = require("../middlewares/auth");
+const upload = require("../middlewares/upload");
 
 // Import your controller or service functions for managing data
 const {
@@ -21,37 +23,31 @@ const createOrUpdateRules = [
     .trim()
     .isLength({ min: 1 })
     .withMessage("Nama field is required"),
-  // body("userId")
-  //   .trim()
-  //   .isLength({ min: 1 })
-  //   .withMessage("User ID field is required"),
-  //   body("waktu")
-  //     .trim()
-  //     .isLength({ min: 1 })
-  //     .withMessage("Waktu field is required")
-  //     .isISO8601()
-  //     .withMessage("Waktu must be a valid ISO 8601 date and time"),
   body("umur")
-  .trim()
-  .isLength({ min: 1 })
-  .withMessage("Umur field is required"),
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage("Umur field is required"),
   body("jenisKelamin")
     .isIn(["JANTAN", "BETINA"])
     .withMessage("JenisKelamin must be either JANTAN or BETINA"),
+  body("jenisPeliharaan")
+    .isIn(["KUCING", "ANJING"])
+    .withMessage("JenisPeliharaan must be either KUCING or ANJING"),
 ];
 
 // Routes that require authentication and input validation
-router.post("/", authentificateToken, createOrUpdateRules, createPeliharaan);
+router.post("/", authentificateToken, upload.single('file'), createOrUpdateRules, createPeliharaan);
 router.put(
   "/:peliharaanId",
   authentificateToken,
+  upload.single('file'),
   createOrUpdateRules,
   updatePeliharaanById
 );
 router.patch(
   "/:peliharaanId",
   authentificateToken,
-  //   createOrUpdateRules,
+  upload.single('file'),
   patchPeliharaanById
 );
 

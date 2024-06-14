@@ -1,12 +1,6 @@
 const { validationResult } = require('express-validator');
-const {
-  get,
-  getById,
-  create,
-  updateById,
-  patchById,
-  deleteById,
-} = require('../models/peliharaan.model');
+const { get, getById, create, updateById, patchById, deleteById } = require('../models/peliharaan.model');
+const { uploadImage, deleteImage } = require('../utils/uploadImage'); // Import fungsi uploadImage dan deleteImage
 
 // Controller function to get all jadwal makanan
 const getAllPeliharaan = async (req, res) => {
@@ -24,7 +18,7 @@ const getPeliharaanById = async (req, res) => {
   try {
     const peliharaan = await getById(parseInt(peliharaanId));
     if (!peliharaan) {
-      return res.status(404).json({ error: 'Jadwal Mainan not found' });
+      return res.status(404).json({ error: 'Peliharaan not found' });
     }
     res.json(peliharaan);
   } catch (error) {
@@ -32,25 +26,36 @@ const getPeliharaanById = async (req, res) => {
   }
 };
 
-// Controller function to create a new jadwal makanan
+// Controller function to create a new peliharaan
 const createPeliharaan = async (req, res) => {
-  // Validate inputs using Express Validator
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
-  
+
+  const { file } = req; // Asumsikan file dikirim melalui form-data dengan field 'file'
+  let fotoPeliharaanUrl = '';
+
+  if (file) {
+    try {
+      fotoPeliharaanUrl = await uploadImage(file);
+    } catch (error) {
+      console.log(error)
+      return res.status(500).json({ error: 'Gagal mengunggah gambar' });
+    }
+  }
+
   const peliharaanData = {
     ...req.body,
-    // umur: parseInt(req.body.umur, 10), // Convert umur to integer
-    userId: req.user.userUID, // Assuming user ID is stored in req.user.id
+    fotoPeliharaan: fotoPeliharaanUrl,
+    userId: req.user.userUID, // Asumsikan ID pengguna disimpan di req.user.userUID
   };
 
   try {
     const createdPeliharaan = await create(peliharaanData);
     res.status(201).json(createdPeliharaan);
   } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: 'Kesalahan Server Internal' });
   }
 };
 
@@ -63,17 +68,33 @@ const updatePeliharaanById = async (req, res) => {
   }
 
   const { peliharaanId } = req.params;
-  const peliharaanData = {
-    ...req.body,
-    // umur: parseInt(req.body.umur, 10), // Convert umur to integer
-    userId: req.user.userUID, // Assuming user ID is stored in req.user.id
-  };
+  const { nama, umur, jenisKelamin, jenisPeliharaan, slogan } = req.body;
+  const file = req.file; // Asumsikan file dikirim melalui form-data dengan field 'file'
 
   try {
-    const updatedPeliharaan = await updateById(parseInt(peliharaanId), peliharaanData);
-    if (!updatedPeliharaan) {
+    const existingPeliharaan = await getById(parseInt(peliharaanId));
+    if (!existingPeliharaan) {
       return res.status(404).json({ error: 'Peliharaan not found' });
     }
+
+    let fotoPeliharaanURL = existingPeliharaan.fotoPeliharaan;
+    if (file) {
+      // Upload new image and delete the old one
+      const newImageURL = await uploadImage(file);
+      await deleteImage(fotoPeliharaanURL);
+      fotoPeliharaanURL = newImageURL;
+    }
+
+    const updatedPeliharaan = await updateById(parseInt(peliharaanId), {
+      nama,
+      umur,
+      jenisKelamin,
+      jenisPeliharaan,
+      slogan,
+      fotoPeliharaan: fotoPeliharaanURL,
+      userId: req.user.userUID,
+    });
+
     res.json(updatedPeliharaan);
   } catch (error) {
     res.status(500).json({ error: 'Internal Server Error' });
@@ -109,7 +130,15 @@ const patchPeliharaanById = async (req, res) => {
 const deletePeliharaanById = async (req, res) => {
   const { peliharaanId } = req.params;
   try {
+    const existingPeliharaan = await getById(parseInt(peliharaanId));
+    if (!existingPeliharaan) {
+      return res.status(404).json({ error: 'Peliharaan not found' });
+    }
+
+    console.log(existingPeliharaan.fotoPeliharaan)
+    await deleteImage(existingPeliharaan.fotoPeliharaan);
     await deleteById(parseInt(peliharaanId));
+
     res.status(204).send(); // No content in response
   } catch (error) {
     res.status(500).json({ error: 'Internal Server Error' });
