@@ -1,6 +1,6 @@
 const prisma = require("../configs/prismaClient");
 
-// Function to retrieve all jadwal makanan from the database
+// Function to retrieve all peliharaan from the database
 const get = async () => {
   try {
     return await prisma.peliharaan.findMany();
@@ -9,7 +9,7 @@ const get = async () => {
   }
 };
 
-// Function to retrieve a specific jadwal makanan by ID from the database
+// Function to retrieve a specific peliharaan by ID from the database
 const getById = async (peliharaanId) => {
   try {
     return await prisma.peliharaan.findUnique({
@@ -22,7 +22,7 @@ const getById = async (peliharaanId) => {
   }
 };
 
-// Function to create a new jadwal makanan in the database
+// Function to create a new peliharaan in the database
 const create = async (peliharaan) => {
   try {
     return await prisma.peliharaan.create({
@@ -33,7 +33,7 @@ const create = async (peliharaan) => {
   }
 };
 
-// Function to update an existing jadwal makanan by ID in the database
+// Function to update an existing peliharaan by ID in the database
 const updateById = async (peliharaanId, peliharaan) => {
   try {
     return await prisma.peliharaan.update({
@@ -48,24 +48,38 @@ const updateById = async (peliharaanId, peliharaan) => {
 };
 
 const patchById = async (peliharaanId, peliharaan) => {
-    try {
-      return await prisma.peliharaan.update({
-        where: {
-          peliharaanId,
-        },
-        data: peliharaan,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-// Function to delete a jadwal makanan by ID from the database
-const deleteById = async (peliharaanId) => {
   try {
-    await await prisma.peliharaan.delete({
+    return await prisma.peliharaan.update({
       where: {
         peliharaanId,
+      },
+      data: peliharaan,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// Function to delete a peliharaan by ID from the database
+const deleteById = async (peliharaanId) => {
+  try {
+    await prisma.peliharaan.delete({
+      where: {
+        peliharaanId,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// Function to find a peliharaan by name and user ID
+const findByNameAndUserId = async (name, userId) => {
+  try {
+    return await prisma.peliharaan.findFirst({
+      where: {
+        nama: name,
+        userId: userId
       },
     });
   } catch (error) {
@@ -80,4 +94,5 @@ module.exports = {
   updateById,
   patchById,
   deleteById,
+  findByNameAndUserId
 };

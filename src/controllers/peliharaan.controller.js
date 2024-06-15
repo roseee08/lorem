@@ -1,8 +1,8 @@
 const { validationResult } = require('express-validator');
-const { get, getById, create, updateById, patchById, deleteById } = require('../models/peliharaan.model');
+const { get, getById, create, updateById, patchById, deleteById, findByNameAndUserId } = require('../models/peliharaan.model');
 const { uploadImage, deleteImage } = require('../utils/uploadImage'); // Import fungsi uploadImage dan deleteImage
 
-// Controller function to get all jadwal makanan
+// Controller function to get all peliharaan
 const getAllPeliharaan = async (req, res) => {
   try {
     const peliharaan = await get();
@@ -12,7 +12,7 @@ const getAllPeliharaan = async (req, res) => {
   }
 };
 
-// Controller function to get a jadwal makanan by ID
+// Controller function to get a peliharaan by ID
 const getPeliharaanById = async (req, res) => {
   const { peliharaanId } = req.params;
   try {
@@ -33,35 +33,39 @@ const createPeliharaan = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { file } = req; // Asumsikan file dikirim melalui form-data dengan field 'file'
-  let fotoPeliharaanUrl = '';
+  const { file } = req; // Assume file is sent through form-data with the field 'file'
+  const userId = req.user.userUID; // Assume user ID is stored in req.user.userUID
 
-  if (file) {
-    try {
-      fotoPeliharaanUrl = await uploadImage(file);
-    } catch (error) {
-      console.log(error)
-      return res.status(500).json({ error: 'Gagal mengunggah gambar' });
-    }
-  }
-
-  const peliharaanData = {
-    ...req.body,
-    fotoPeliharaan: fotoPeliharaanUrl,
-    userId: req.user.userUID, // Asumsikan ID pengguna disimpan di req.user.userUID
-  };
+  const { nama } = req.body;
 
   try {
+    // Check if the pet name already exists for the user
+    const existingPeliharaan = await findByNameAndUserId(nama, userId);
+    if (existingPeliharaan) {
+      return res.status(400).json({ error: 'Peliharaan dengan nama yang sama sudah ada' });
+    }
+
+    let fotoPeliharaanUrl = '';
+    if (file) {
+      // Upload image only if file is provided
+      fotoPeliharaanUrl = await uploadImage(file);
+    }
+
+    const peliharaanData = {
+      ...req.body,
+      fotoPeliharaan: fotoPeliharaanUrl,
+      userId: userId,
+    };
+
     const createdPeliharaan = await create(peliharaanData);
     res.status(201).json(createdPeliharaan);
   } catch (error) {
-    res.status(500).json({ error: 'Kesalahan Server Internal' });
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
-// Controller function to update a jadwal makanan by ID
+// Controller function to update a peliharaan by ID
 const updatePeliharaanById = async (req, res) => {
-  // Validate inputs using Express Validator
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -69,12 +73,21 @@ const updatePeliharaanById = async (req, res) => {
 
   const { peliharaanId } = req.params;
   const { nama, umur, jenisKelamin, jenisPeliharaan, slogan } = req.body;
-  const file = req.file; // Asumsikan file dikirim melalui form-data dengan field 'file'
+  const file = req.file; // Assume file is sent through form-data with the field 'file'
+  const userId = req.user.userUID;
 
   try {
     const existingPeliharaan = await getById(parseInt(peliharaanId));
     if (!existingPeliharaan) {
       return res.status(404).json({ error: 'Peliharaan not found' });
+    }
+
+    // Check if the pet name already exists for the user, excluding the current peliharaan
+    if (nama !== existingPeliharaan.nama) {
+      const duplicatePeliharaan = await findByNameAndUserId(nama, userId);
+      if (duplicatePeliharaan) {
+        return res.status(400).json({ error: 'Peliharaan dengan nama yang sama sudah ada' });
+      }
     }
 
     let fotoPeliharaanURL = existingPeliharaan.fotoPeliharaan;
@@ -92,7 +105,7 @@ const updatePeliharaanById = async (req, res) => {
       jenisPeliharaan,
       slogan,
       fotoPeliharaan: fotoPeliharaanURL,
-      userId: req.user.userUID,
+      userId: userId,
     });
 
     res.json(updatedPeliharaan);
@@ -102,7 +115,6 @@ const updatePeliharaanById = async (req, res) => {
 };
 
 const patchPeliharaanById = async (req, res) => {
-  // Validate inputs using Express Validator
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -111,8 +123,7 @@ const patchPeliharaanById = async (req, res) => {
   const { peliharaanId } = req.params;
   const peliharaanData = {
     ...req.body,
-    // umur: parseInt(req.body.umur, 10), // Convert umur to integer
-    userId: req.user.userUID, // Assuming user ID is stored in req.user.id
+    userId: req.user.userUID, // Assume user ID is stored in req.user.userUID
   };
 
   try {
@@ -126,7 +137,7 @@ const patchPeliharaanById = async (req, res) => {
   }
 };
 
-// Controller function to delete a jadwal makanan by ID
+// Controller function to delete a peliharaan by ID
 const deletePeliharaanById = async (req, res) => {
   const { peliharaanId } = req.params;
   try {
@@ -135,7 +146,6 @@ const deletePeliharaanById = async (req, res) => {
       return res.status(404).json({ error: 'Peliharaan not found' });
     }
 
-    console.log(existingPeliharaan.fotoPeliharaan)
     await deleteImage(existingPeliharaan.fotoPeliharaan);
     await deleteById(parseInt(peliharaanId));
 
