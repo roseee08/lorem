@@ -60,6 +60,7 @@ model Peliharaan {
   peliharaanId    Int               @id @default(autoincrement())
   jenisPeliharaan JenisPeliharaan
   nama            String
+  ras            String
   umur            String
   jenisKelamin    JenisKelamin
   fotoPeliharaan  String            @db.VarChar(800)

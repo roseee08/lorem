@@ -23,6 +23,10 @@ const createOrUpdateRules = [
     .trim()
     .isLength({ min: 1 })
     .withMessage("Nama field is required"),
+  body("ras")
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage("Ras field is required"),
   body("umur")
     .trim()
     .isLength({ min: 1 })
