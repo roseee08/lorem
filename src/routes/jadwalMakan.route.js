@@ -21,6 +21,10 @@ const createOrUpdateRules = [
     .trim()
     .isLength({ min: 1 })
     .withMessage("Jadwal Makan field is required"),
+  body("tahap")
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage("Tahap Makan field is required"),
   // body("userId")
   //   .trim()
   //   .isLength({ min: 1 })

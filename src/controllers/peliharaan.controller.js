@@ -72,7 +72,7 @@ const updatePeliharaanById = async (req, res) => {
   }
 
   const { peliharaanId } = req.params;
-  const { nama, umur, jenisKelamin, jenisPeliharaan, slogan } = req.body;
+  const { nama, umur, jenisKelamin, jenisPeliharaan, ras, fotoPeliharaan  } = req.body;
   const file = req.file; // Assume file is sent through form-data with the field 'file'
   const userId = req.user.userUID;
 
@@ -103,7 +103,7 @@ const updatePeliharaanById = async (req, res) => {
       umur,
       jenisKelamin,
       jenisPeliharaan,
-      slogan,
+      ras,
       fotoPeliharaan: fotoPeliharaanURL,
       userId: userId,
     });
