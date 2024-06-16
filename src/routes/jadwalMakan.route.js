@@ -17,10 +17,6 @@ const {
 
 // Validation rules for create and update routes
 const createOrUpdateRules = [
-  body("jadwalMakan")
-    .trim()
-    .isLength({ min: 1 })
-    .withMessage("Jadwal Makan field is required"),
   body("tahap")
     .trim()
     .isLength({ min: 1 })
