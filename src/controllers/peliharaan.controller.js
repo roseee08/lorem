@@ -1,11 +1,19 @@
+// peliharaan.controller.js
+
 const { validationResult } = require('express-validator');
 const { get, getById, create, updateById, patchById, deleteById, findByNameAndUserId } = require('../models/peliharaan.model');
 const { uploadImage, deleteImage } = require('../utils/uploadImage'); // Import fungsi uploadImage dan deleteImage
+const { calculateAge } = require('../utils/dateHelper'); // Import dateHelper
 
 // Controller function to get all peliharaan
 const getAllPeliharaan = async (req, res) => {
   try {
-    const peliharaan = await get();
+    let peliharaan = await get();
+    // Menghitung umur untuk setiap peliharaan
+    peliharaan = peliharaan.map(p => ({
+      ...p,
+      umur: calculateAge(p.tanggalLahir) // Menggunakan fungsi calculateAge untuk menghitung umur
+    }));
     res.json(peliharaan);
   } catch (error) {
     res.status(500).json({ error: 'Internal Server Error' });
@@ -20,13 +28,15 @@ const getPeliharaanById = async (req, res) => {
     if (!peliharaan) {
       return res.status(404).json({ error: 'Peliharaan not found' });
     }
+    // Menghitung umur berdasarkan tanggal lahir
+    peliharaan.umur = calculateAge(peliharaan.tanggalLahir);
     res.json(peliharaan);
   } catch (error) {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
-// Controller function to create a new peliharaan
+// Function to create a new peliharaan
 const createPeliharaan = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -36,7 +46,7 @@ const createPeliharaan = async (req, res) => {
   const { file } = req; // Assume file is sent through form-data with the field 'file'
   const userId = req.user.userUID; // Assume user ID is stored in req.user.userUID
 
-  const { nama } = req.body;
+  const { nama, tanggalLahir } = req.body;
 
   try {
     // Check if the pet name already exists for the user
@@ -58,13 +68,15 @@ const createPeliharaan = async (req, res) => {
     };
 
     const createdPeliharaan = await create(peliharaanData);
+    // Menghitung umur berdasarkan tanggal lahir
+    createdPeliharaan.umur = calculateAge(createdPeliharaan.tanggalLahir);
     res.status(201).json(createdPeliharaan);
   } catch (error) {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
-// Controller function to update a peliharaan by ID
+// Function to update a peliharaan by ID
 const updatePeliharaanById = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -72,7 +84,7 @@ const updatePeliharaanById = async (req, res) => {
   }
 
   const { peliharaanId } = req.params;
-  const { nama, umur, jenisKelamin, jenisPeliharaan, ras, fotoPeliharaan  } = req.body;
+  const { nama, jenisKelamin, jenisPeliharaan, ras, fotoPeliharaan, tanggalLahir } = req.body;
   const file = req.file; // Assume file is sent through form-data with the field 'file'
   const userId = req.user.userUID;
 
@@ -100,13 +112,16 @@ const updatePeliharaanById = async (req, res) => {
 
     const updatedPeliharaan = await updateById(parseInt(peliharaanId), {
       nama,
-      umur,
       jenisKelamin,
       jenisPeliharaan,
       ras,
       fotoPeliharaan: fotoPeliharaanURL,
+      tanggalLahir, // Menggunakan tanggalLahir yang diterima dari request
       userId: userId,
     });
+
+    // Menghitung umur berdasarkan tanggal lahir
+    updatedPeliharaan.umur = calculateAge(updatedPeliharaan.tanggalLahir);
 
     res.json(updatedPeliharaan);
   } catch (error) {
@@ -114,6 +129,7 @@ const updatePeliharaanById = async (req, res) => {
   }
 };
 
+// Function to patch a peliharaan by ID
 const patchPeliharaanById = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -131,13 +147,17 @@ const patchPeliharaanById = async (req, res) => {
     if (!updatedPeliharaan) {
       return res.status(404).json({ error: 'Peliharaan not found' });
     }
+    
+    // Menghitung umur berdasarkan tanggal lahir
+    updatedPeliharaan.umur = calculateAge(updatedPeliharaan.tanggalLahir);
+
     res.json(updatedPeliharaan);
   } catch (error) {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
-// Controller function to delete a peliharaan by ID
+// Function to delete a peliharaan by ID
 const deletePeliharaanById = async (req, res) => {
   const { peliharaanId } = req.params;
   try {

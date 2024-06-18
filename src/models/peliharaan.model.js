@@ -34,6 +34,7 @@ const create = async (peliharaan) => {
 };
 
 // Function to update an existing peliharaan by ID in the database
+// Function to update an existing peliharaan by ID in the database
 const updateById = async (peliharaanId, peliharaan) => {
   try {
     return await prisma.peliharaan.update({

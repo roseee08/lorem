@@ -60,8 +60,8 @@ model Peliharaan {
   peliharaanId    Int               @id @default(autoincrement())
   jenisPeliharaan JenisPeliharaan
   nama            String
-  ras            String
-  umur            String
+  ras             String
+  tanggalLahir    DateTime // New field for birth date
   jenisKelamin    JenisKelamin
   fotoPeliharaan  String            @db.VarChar(800)
   user            User              @relation(fields: [userId], references: [userUID])

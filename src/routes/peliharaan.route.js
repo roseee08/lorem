@@ -1,13 +1,12 @@
-// routes/peliharaan.js
 const express = require("express");
 const { body } = require("express-validator");
 const router = express.Router();
 
-// Require the authentificateToken middleware
+// Middleware
 const { authentificateToken } = require("../middlewares/auth");
 const upload = require("../middlewares/upload");
 
-// Import your controller or service functions for managing data
+// Controllers
 const {
   getAllPeliharaan,
   getPeliharaanById,
@@ -27,10 +26,6 @@ const createOrUpdateRules = [
     .trim()
     .isLength({ min: 1 })
     .withMessage("Ras field is required"),
-  body("umur")
-    .trim()
-    .isLength({ min: 1 })
-    .withMessage("Umur field is required"),
   body("jenisKelamin")
     .isIn(["JANTAN", "BETINA"])
     .withMessage("JenisKelamin must be either JANTAN or BETINA"),
@@ -41,19 +36,8 @@ const createOrUpdateRules = [
 
 // Routes that require authentication and input validation
 router.post("/", authentificateToken, upload.single('file'), createOrUpdateRules, createPeliharaan);
-router.put(
-  "/:peliharaanId",
-  authentificateToken,
-  upload.single('file'),
-  createOrUpdateRules,
-  updatePeliharaanById
-);
-router.patch(
-  "/:peliharaanId",
-  authentificateToken,
-  upload.single('file'),
-  patchPeliharaanById
-);
+router.put("/:peliharaanId", authentificateToken, upload.single('file'), createOrUpdateRules, updatePeliharaanById);
+router.patch("/:peliharaanId", authentificateToken, upload.single('file'), patchPeliharaanById);
 
 // Routes that require authentication (GET all, GET by ID, DELETE)
 router.get("/", authentificateToken, getAllPeliharaan);
