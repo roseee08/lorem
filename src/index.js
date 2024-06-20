@@ -9,6 +9,8 @@ const { body, validationResult } = require("express-validator");
 const { authentificateToken } = require("./middlewares/auth");
 const API_KEY = '5a8109e0575d4a13ae6a222fbae07410';
 const app = express();
+const PORT = parseInt(process.env.PORT) || 5000;
+const HOST = process.env.HOST;
 
 app.use(express.json());
 
@@ -31,4 +33,6 @@ app.get('/api/tips-for-cat-and-dog-care', async (req, res) => {
     }
   });
 
-app.listen(3000);
+app.listen(PORT, HOST, async() => {
+  console.log(`Server is running on http: ${HOST}:${PORT}`);
+});
