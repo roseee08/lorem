@@ -16,9 +16,6 @@ COPY . .
 # Jika menggunakan Prisma, buat klien Prisma
 RUN npx prisma generate
 
-# Salin file .env jika diperlukan (hilangkan tanda komentar jika diperlukan)
-COPY .env .env
-
 # Buka port yang digunakan aplikasi
 EXPOSE 8080
 
