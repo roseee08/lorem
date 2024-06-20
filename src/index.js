@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const jadwalMakanRoutes = require("./routes/jadwalMakan.route");
 const jadwalVitaminRoutes = require("./routes/jadwalVitamin.route");
 const jadwalAktifitasRoutes = require("./routes/jadwalAktifitas.route");
@@ -12,6 +13,7 @@ const app = express();
 const PORT = parseInt(process.env.PORT) || 5000;
 const HOST = process.env.HOST;
 
+app.use(cors()); // Add this line to enable CORS
 app.use(express.json());
 
 app.use("/jadwalmakans", jadwalMakanRoutes);
