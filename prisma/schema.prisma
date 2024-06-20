@@ -10,7 +10,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
+  url      = "mysql://root:pawsPS34.@34.101.82.252:3306/capstones"
 }
 
 model JadwalMakan {
